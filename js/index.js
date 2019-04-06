@@ -69,15 +69,20 @@ function draw() {
   //Se llama la funcion de dibujar un rectangulo
   drawPaddle();
 
-  // Verificar si llego al limite de arriba/abajo
-  if (y + dy < 0 || y + dy > canvas.height) {
-    dy = -dy;
+  // Verificar si llego al limite izquierdo/derecho
+  if (x + dx > canvas.width - ballRadius  || x + dx < ballRadius) {
+    dx = -dx;
   }
 
-
-  // Verificar si llego al limite izquierdo/derecho
-  if (x + dx < 0 || x + dx > canvas.width) {
-    dx = -dx;
+  if (y + dy < ballRadius) {
+    dy = -dy
+  } else if (y + dy > canvas.height - ballRadius) {
+    if (x > paddleX && paddleX + paddleWidth){
+      dy = -dy;
+    } else {
+      alert("PERSITE");
+      document.location.reload();
+    }
   }
 
   // verificar si se toco la tecla direccional derecha
