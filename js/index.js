@@ -27,7 +27,11 @@ var brickPadding = 10;
 var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 
-var bloques = [];
+var score = 0;
+
+var vidas = 3;
+
+var bloques  = [];
 
 for (var  fila = 0; fila  <  brickRowCount; fila++) {
   bloques[fila] = [];
@@ -111,6 +115,9 @@ function detectarChoque () {
     for (var column = 0; column < brickColumnCount; column++) {
       var bloque = bloques[row][column];
 
+
+
+     if (bloque.status == 1){
       if (
         x > bloque.x &&
         x < bloque.x + brickWidth &&
@@ -118,10 +125,33 @@ function detectarChoque () {
         y < bloque.y + brickHeight) {
           dy = -dy;
           bloque.status = 0;
+          score++;
+
+
+     if (score == brickColumnCount * brickRowCount) {
+       alert("GANASTE");
+       document.location.reload();
+     }
+
           }
         }
       }
     }
+  }
+
+  // Esta funcion dibuja el puntaje
+  function dibujarPuntaje() {
+    context.font = "16px Arial";
+    context.fillStyle = "#0095DD";
+    context.fillText("Puntaje : " + score, 8, 20);
+  }
+
+//Esta funcion ve las vidas
+  function verVidas() {
+    context.font = "16px Arial";
+    context.fillStyle = "#0095DD";
+    context.fillText("Vidas : " + vidas, 400, 20);
+  }
 
 function draw() {
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -138,6 +168,12 @@ function draw() {
   //Se manda a la funcion detectar choque
   detectarChoque();
 
+//se llama a la funcion dibujar puntaje
+  dibujarPuntaje();
+
+//Se llama a la funcion ver vidas
+  verVidas();
+
   // Verificar si llego al limite izquierdo/derecho
   if (x + dx > canvas.width - ballRadius  || x + dx < ballRadius) {
     dx = -dx;
@@ -146,13 +182,22 @@ function draw() {
   if (y + dy < ballRadius) {
     dy = -dy
   } else if (y + dy > canvas.height - ballRadius) {
-    if (x > paddleX && paddleX + paddleWidth){
+    if (x > paddleX && x < paddleX + paddleWidth){
       dy = -dy;
+    } else {
+      vidas--;
+      if (!vidas) {
+        alert("PERDISTE");
+        document.location.reload();
+      } else {
+        x = canvas.width / 2;
+        y = canvas.height - 30;
+        dx = 3;
+        dy = -3;
+        paddleX = (canvas.width - paddleWidth) / 2;
+      }
+      // si no son iguales a cero, reiniciar la posicion de la paleta al medio y poner la pelotita abajo
     }
-    // else {
-    //   alert("PERDISTE");
-    //   document.location.reload();
-    // }
   }
 
   // verificar si se toco la tecla direccional derecha
